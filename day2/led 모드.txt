@@ -1,0 +1,52 @@
+int mode=0;
+int sec=1000;
+int ledState=LOW;
+long preTime=0;
+void setup()
+{
+  pinMode(8,OUTPUT);
+  pinMode(7,INPUT);
+}
+
+void loop()
+{
+  unsigned long nowTime=millis();
+
+  int pulse=digitalRead(7);
+  if(pulse==HIGH)
+  {
+    mode +=1;
+    mode %=3;
+    delay(200);
+  }
+
+  if(mode==1)
+  {
+    sec=1000;
+  }
+  else if(mode==2)
+  {
+    sec=300;
+  }
+
+  if(mode==0)
+  {
+    ledState=LOW;
+  }
+  else
+  {
+    if(nowTime-preTime>=sec)
+    {
+      if(ledState==LOW)
+      {
+        ledState=HIGH;
+      }
+      else
+      {
+        ledState=LOW;
+      }
+      preTime=nowTime;
+    }
+  }
+  digitalWrite(8,ledState);
+}
