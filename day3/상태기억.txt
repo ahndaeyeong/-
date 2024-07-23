@@ -1,0 +1,29 @@
+#include <EEPROM.h>
+
+int ledState=LOW;
+
+void setup(){
+  Serial.begin(9600);
+  pinMode(7,OUTPUT);
+  ledState=EEPROM.read(0);
+}
+
+void loop()
+{
+  if(Serial.available())
+  {
+    String cmd=Serial.readStringUntil('\n');
+    if(cmd.equals("ON"))
+    {
+      ledState=HIGH;
+      EEPROM.update(0,HIGH);
+    }
+    else if(cmd.equals("OFF"))
+    {
+      ledState=LOW;
+      EEPROM.update(0,LOW);
+    }
+  }
+
+  digitalWrite(7,ledState);
+}

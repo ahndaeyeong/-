@@ -1,0 +1,32 @@
+#include <DHT.h>
+DHT dth11(9,DHT11);
+char cmd;
+
+void setup()
+{
+  Serial.begin(9600);
+  dth11.begin();
+}
+
+void loop()
+{
+  float t=dth11.readTemperature();
+  if(Serial.available())
+  {
+    cmd=Serial.read();
+    if(cmd=='\n')
+    {
+      
+    }
+    else if(cmd=='T')
+    {
+      Serial.println(t);
+      delay(100);
+    }
+    else
+    {
+      Serial.println("not menu");
+      delay(100);
+    }
+  }
+}
