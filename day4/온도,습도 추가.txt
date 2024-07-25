@@ -1,0 +1,66 @@
+#include<DHT.h>
+DHT dht(4,DHT11);
+float temp[100];
+float humi[100];
+int count=0;
+long pretime=0;
+
+void setup()
+{
+  Serial.begin(9600);
+  dht.begin();
+}
+
+void loop()
+{
+  int t;
+  int h;
+  long nowtime=millis();
+
+  if(nowtime-pretime>=1000)
+  {
+    t=dht.readTemperature();
+    h=dht.readHumidity();
+    if(count!=100)
+    {
+      temp[count]=t;
+      humi[count]=h;
+      count++;
+      
+    }
+    else
+    {
+      for(int i=0;i<99;i++)
+      {
+        temp[i]=temp[i+1];
+        humi[i]=humi[i+1];
+      }
+      temp[99]=t;
+      humi[99]=h;
+    }
+   
+    pretime=nowtime;
+  }
+  
+
+  if(Serial.available())
+  {
+    String cmd=Serial.readStringUntil('\n');
+    {
+      if(cmd.equals("temp"))
+      {
+        for(int i=0;i<100;i++)
+        {
+          Serial.println(temp[i]);
+        }
+      }
+      else if(cmd.equals("humi"))
+      {
+        for(int i=0;i<100;i++)
+        {
+          Serial.println(humi[i]);
+        }
+      }
+    }
+  }
+}
