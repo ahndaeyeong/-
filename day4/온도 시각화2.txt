@@ -1,0 +1,54 @@
+#include<DHT.h>
+DHT dht(4,DHT11);
+float temp[100];
+int count=0;
+long pretime=0;
+
+void setup()
+{
+  Serial.begin(9600);
+  dht.begin();
+}
+
+void loop()
+{
+  int t;
+  long nowtime=millis();
+
+  if(nowtime-pretime>=1000)
+  {
+    t=dht.readTemperature();
+    
+    if(count!=100)
+    {
+      temp[count]=t;
+      count++;
+      
+    }
+    else
+    {
+      for(int i=0;i<99;i++)
+      {
+        temp[i]=temp[i+1];
+      }
+      temp[99]=t;
+    }
+   
+    pretime=nowtime;
+  }
+  
+
+  if(Serial.available())
+  {
+    String cmd=Serial.readStringUntil('\n');
+    {
+      if(cmd.equals("temp"))
+      {
+        for(int i=0;i<100;i++)
+        {
+          Serial.println(temp[i]);
+        }
+      }
+    }
+  }
+}
