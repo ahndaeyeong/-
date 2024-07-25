@@ -1,0 +1,56 @@
+int speed=0;
+int on=0;
+void setup()
+{
+  pinMode(2,INPUT_PULLUP);
+  pinMode(A1,INPUT);
+  pinMode(A2,INPUT);
+  pinMode(A3,OUTPUT);
+}
+
+void loop()
+{
+  int x=analogRead(A1);
+  int y=analogRead(A2);
+  int sw=digitalRead(2);
+
+  if(on==1)
+  {
+    if(y<300)
+    {
+      speed++;
+      if(speed<1024)
+      {
+        speed=1024;
+      }
+    }
+
+    if(y>700)
+    {
+      
+      speed--;
+      if(speed<1)
+      {
+        speed=1;
+      }
+    }
+
+    analogWrite(A3,speed);
+  }
+  
+
+  if(sw==0)
+  {
+    if(on==0)
+    {
+      on=1;
+    }
+    else
+    {
+      on=0;
+      analogWrite(A3,0);
+    }
+    delay(200);
+  }
+  
+}
